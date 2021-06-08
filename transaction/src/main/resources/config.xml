@@ -29,7 +29,7 @@
 	</bean>
 	<!-- 트랜잭션 -->
 	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-		<property name="dataSource" ref="ds"></property>
+		<property name="dataSource" ref="ds"/>
 	</bean>
 	<tx:advice id="txManager" transaction-manager="transactionManager">
 		<tx:attributes>

@@ -8,5 +8,16 @@
 </head>
 <body>
 ${test}
+<h1>로그인 값 출력</h1>
+<ul>
+<!--LoginVO => loginVO : 불러서 사용할때는 앞글자를 소문자로 변경 -->
+	<%-- <li>userid : ${loginVO.userid}</li>
+	<li>password : ${loginVO.password}</li>--%>
+	
+	<%-- ModelAttribute 사용 --%>
+	<li>userid : ${vo.userid}</li>
+	<li>password : ${vo.password}</li>
+	<li>page : ${page}</li>
+</ul>
 </body>
 </html>
