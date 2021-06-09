@@ -91,7 +91,7 @@ pageEncoding="UTF-8"%>
             <div class="form-check form-check-inline">
               <input
                 type="radio"
-                id="gender"
+                name="gender"
                 value="여"
                 class="form-check-input"
               />여

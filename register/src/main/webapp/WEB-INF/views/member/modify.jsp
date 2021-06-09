@@ -37,7 +37,8 @@
 			    <button type="reset" class="btn btn-secondary" id="modifycancel">취소</button>		
 			</div>
 		</div>
-	</div>		
+	</div>
+	<input type="hidden" name="userid" value="${login.userid}">
 </form>
 </body>
 </html>
