@@ -21,6 +21,7 @@
 	</delete>
 	<!-- 비밀번호 변경 : update -->
 	<update id="update">
-		update memberTBL set password = #{newpassword} where userid = #{userid} and password = #{password}
+		update memberTBL set password = #{new_password} 
+		where userid = #{userid} and password = #{current_password}
 	</update>
 </mapper>

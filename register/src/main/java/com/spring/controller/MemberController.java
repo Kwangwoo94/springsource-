@@ -55,11 +55,23 @@ public class MemberController {
 		
 		return "/member/modify";
 	}
-	@PostMapping("/change-pwd")
-	public String chanePwdPost(ChangeVO change) {
+	
+	@GetMapping ("/change-pwd")
+	public String chanePwdPost(ChangeVO change,HttpSession session,RedirectAttributes rttr) {
 		log.info("비밀번호 수정"+change);
 		
-		return "";
+		if(change.newPasswordEqualsConfirmPassword()) {
+			if(service.update(change)) {
+				session.invalidate();
+				return "redirect:/member/login";
+			}else { // 현재 비밀번호 오류
+				rttr.addFlashAttribute("error", "현재 비밀번호를 확인해 주세요");
+				return "redirect:/member/change-pwd";
+			}
+		}else { // 변경비밀번호와 확정변경비밀번호가 다른경우
+			rttr.addFlashAttribute("error", "변경 비밀번호가 다릅니다.");
+			return"redirect:/member/change-pwd";
+		}
 	}
 	
 	//logout => session 해제 후 index 보여주기

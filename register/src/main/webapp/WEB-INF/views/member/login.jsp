@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="/resources/css/starter-template.css">
 </head>
 <body>
-<form class="form-signin" name="loginform" action="/" method="post">
+<form class="form-signin" name="loginform" action="" method="post">
   <div class="form-label-group">
     <input type="text" id="userid" name="userid" class="form-control" placeholder="id" required autofocus>
     <label for="userid">아이디</label>

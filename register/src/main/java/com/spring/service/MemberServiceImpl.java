@@ -3,6 +3,7 @@ package com.spring.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.spring.domain.ChangeVO;
 import com.spring.domain.LoginVO;
 import com.spring.domain.MemberVO;
 import com.spring.mapper.MemberMapper;
@@ -34,8 +35,8 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
-	public boolean update(String userid, String password, String newpassword) {
-		return mapper.update(userid, password, newpassword)>0?true:false;
+	public boolean update(ChangeVO change) {
+		return mapper.update(change)>0?true:false;
 	}
 
 }
