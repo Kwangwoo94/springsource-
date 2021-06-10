@@ -3,19 +3,19 @@
 <mapper namespace="com.spring.mapper.BookMapper">
 	<insert id="insert">
 		insert into bookTBL(code,title,writer,price) 
-		values(${code},${title},${writer},${price})
+		values(#{code},#{title},#{writer},#{price})
 	</insert>
 	<delete id="delete">
-		delete from booktbl where code=${code}
+		delete from bookTBL where code=#{code}
 	</delete>
 	<update id="update">
-		update booktbl set price=${price} where code=${code}
+		update bookTBL set price=#{price} where code=#{code}
 	</update>
 	<select id="list" resultType="com.spring.domain.BookVO">
-		select * from booktbl
+		select * from bookTBL
 	</select>
 	<select id="search" resultType="com.spring.domain.BookVO">
-		select * from booktbl
+		select * from bookTBL
 		where
 		<if test="criteria=='code'.toString()">
 			code=#{keyword}
