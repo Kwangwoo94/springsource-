@@ -34,7 +34,7 @@
 									<c:forEach var="vo" items="${list}">
 										<tr>
 											<td>${vo.bno}</td>
-											<td><a href="read?bno=${vo.bno}"/> ${vo.title}</td>
+											<td><a href="${vo.bno}" class="move"> ${vo.title}</a></td>
 											<td>${vo.writer}</td>
 											<td><fmt:formatDate pattern="yyyy-MM-dd HH:mm" value="${vo.regdate}"/></td>
 											<td><fmt:formatDate pattern="yyyy-MM-dd HH:mm" value="${vo.updatedate}"/></td>
@@ -45,19 +45,46 @@
 							<div class="row"> <!-- start search -->
                             	<div class="col-md-12">
                             	  <div class="col-md-8"><!--search Form-->
-                            		
+                            		<form action="" id="searchForm">
+                            			<select name="type" id="" class="form-control">
+                            				<option value="">---------</option>
+                            				<option value="T">제목</option>
+                            				<option value="C">내용</option>
+                            				<option value="W">작성자</option>
+                            				<option value="TC">제목 or 내용</option>
+                            				<option value="TCW">제목 or 내용 or 작성자</option>
+                            			</select>
+                            			<input type="text" name="keyword" id="">
+                            			<button type="button" class="btn btn-default">검색</button>
+                            		</form>
                             	   </div>
                             	   <div class="col-md-2 col-md-offset-2">
                             	   	<!--페이지 목록 갯수 지정하는 폼-->
+                            	   	<select name="" id="amount" class="form-control">
+                            	   		<option value="10" <c:out value="${pageVO.cri.amount==10?'selected':''}"/>>10</option>
+                            	   		<option value="20" <c:out value="${pageVO.cri.amount==20?'selected':''}"/>>20</option>
+                            	   		<option value="30" <c:out value="${pageVO.cri.amount==30?'selected':''}"/>>30</option>
+                            	   		<option value="40" <c:out value="${pageVO.cri.amount==40?'selected':''}"/>>40</option>
+                            	   	</select>
 								  </div>
                              	 </div>                             	 
                       		 </div><!-- end search -->
                             <!-- start Pagination -->
                             <div class="text-center">
                             	<ul class="pagination">
-                            		<li class="paginate_button previous"><a href="#">Previous</a>
-                            		<li><a href="#">1234</a>
-                            		<li class="paginate_button next"><a href="#">Next</a>
+                            		<c:if test="${pageVO.prev}">
+                            			<li class="paginate_button previous"><a href="${pageVO.startPage-1}">Previous</a></li>
+                            		</c:if>
+                            		
+                            		<c:forEach var="idx" begin="${pageVO.startPage}" end="${pageVO.endPage}">
+                            			<li class="paginate_button ${pageVO.cri.pageNum==idx?'active':''}">
+                            				<a href="${idx}">${idx}</a>
+                            			</li>
+                            		</c:forEach>
+                            		
+                            		<c:if test="${pageVO.next}">
+                            			<li class="paginate_button next"><a href="${pageVO.endPage+1}">Next</a></li>
+                            		</c:if>
                             	</ul>
                             </div>
                             <!-- end Pagination -->   
@@ -68,7 +95,32 @@
                     </div>                   
                 </div>               
             <!-- /.row -->
+<!-- 페이지 나누기 추가 -->            
+<form action="list" method="get" id="actionForm">
+	<input type="hidden" name="pageNum" value="${pageVO.cri.pageNum}">
+	<input type="hidden" name="amount" value="${pageVO.cri.amount}">
+</form>
+            
 <!-- 모달 추가 -->
-
+<div class="modal" tabindex="-1" id="myModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">게시글 등록</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>처리가 완료 되었습니다.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
 <!-- 스크립트 -->
+<script>
+	let result='${result}';
+</script>
+<script src="/resources/js/list.js"></script>
 <%@include file="../includes/footer.jsp" %>       
