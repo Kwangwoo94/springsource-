@@ -34,3 +34,19 @@ from(select /*+INDEX_DESC(spring_board pk spring_board)*/
 	from SPRING_BOARD
 	where rownum<=10
 where rn>0;
+
+-- TC 선택, 검색어 자바
+select *
+from(select /*+INDEX_DESC(spring_board pk spring_board)*/
+	rownum rn,bno,title,writer,regdate,updatedate
+	from SPRING_BOARD
+	where rownum <= (1*20) and (title like '%자바' or content like '%자바')
+where rn > ((1-1)*20)
+
+-- TCW 선택, 검색어 자바
+select *
+from(select /*+INDEX_DESC(spring_board pk spring_board)*/
+	rownum rn,bno,title,writer,regdate,updatedate
+	from SPRING_BOARD
+	where rownum <= (1*20) and (title like '%자바' or content like '%자바' or writer like '%자바')
+where rn > ((1-1)*20)
