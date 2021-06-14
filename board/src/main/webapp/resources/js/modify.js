@@ -12,12 +12,12 @@ $(function(){
 		
 		var oper = $(this).data("oper");
 		
-		if(oper=="modify"){
+		if(oper==="modify"){
 			operForm=$("form[role='form']");
-		}else if(oper=="remove"){
+		}else if(oper==="remove"){
 			operForm.attr('action','/board/remove');
 		}
-		else if(oper=="list"){
+		else if(oper==="list"){
 			operForm.find("input[name='bno']").remove();
 			operForm.attr('method','get');
 			operForm.attr('action','/board/list');

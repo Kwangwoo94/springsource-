@@ -43,6 +43,7 @@ public class RestControllerTest {
 		return list;
 	}
 	
+	@GetMapping("/check")
 	public ResponseEntity<SampleVO> check(double height,double weight){
 		SampleVO vo = new SampleVO();
 		vo.setFirstName(height+"");
