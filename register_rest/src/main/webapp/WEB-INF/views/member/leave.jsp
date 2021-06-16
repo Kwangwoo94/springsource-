@@ -33,5 +33,34 @@
 		</div>
 	</div>		
 </form>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<script>
+$(function(){
+	$(".btn-primary").click(function(e){
+		e.preventDefault();
+	
+		let param={
+				userid:$("input[name='userid']").val();
+				current_password:$("#current_password").val();
+		}
+		
+		$.ajax({
+			url:"../leave2",
+			type:"delete",
+			contentType:"application/json",
+			data:JSON.stringify(param),
+			success:function(data){
+				if(data=='success'){
+					alert('회원 탈퇴가 성공하였습니다.');
+					location.href="/";
+				}
+			},
+			error:function(xhr,textStatus,error){
+					alert('비밀번호를 확인해 주세요');
+					$("#current_password").select();
+			}
+		})
+	})
+})
 </body>
 </html>

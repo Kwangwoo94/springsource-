@@ -30,7 +30,7 @@
 		<![CDATA[
 			select *
 			from(select /*+INDEX_DESC(spring_board pk spring_board)*/
-					rownum rn,bno,title,writer,regdate,updatedate
+					rownum rn,bno,title,writer,regdate,updatedate,replycnt
 				from SPRING_BOARD
 				where 
 		]]>	
@@ -59,6 +59,11 @@
 		select * from spring_board where
 		bno=#{bno}
 	</select>
+	<!-- 댓글 숫자 수정 : 댓글의 삽입 or 댓글 삭제 시 -->
+	<update id="replyCntUpdate">
+		update spring_board set replycnt = replycnt+ #{amount}
+		where bno=#{bno}
+	</update>
 	
 	
 	<!-- 동적 SQL -->

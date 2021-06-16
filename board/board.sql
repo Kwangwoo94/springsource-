@@ -12,3 +12,10 @@ alter table spring_board add constraint pk_string_board primary key(bno);
 
 -- 시퀀스 생성
 create sequence seq_board;
+
+--댓글 수 저장 컬럼 추가
+alter table spring_board add(replycnt number default 0);
+
+--이미 들어간 댓글 수 삽입
+update spring_board
+set replycnt = (select count(bno) from SPRING_REPLY where SPRING_BOARD.bno = SPRING_REPLY.bno);

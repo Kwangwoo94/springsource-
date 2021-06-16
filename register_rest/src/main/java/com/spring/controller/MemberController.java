@@ -56,7 +56,7 @@ public class MemberController {
 		return "/member/modify";
 	}
 	
-	@GetMapping ("/change-pwd")
+	@PostMapping ("/change-pwd")
 	public String chanePwdPost(ChangeVO change,HttpSession session,RedirectAttributes rttr) {
 		log.info("비밀번호 수정"+change);
 		
