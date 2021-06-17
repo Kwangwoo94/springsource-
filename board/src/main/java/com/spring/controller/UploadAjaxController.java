@@ -35,149 +35,159 @@ import net.coobird.thumbnailator.Thumbnailator;
 @Log4j2
 public class UploadAjaxController {
 
-	// uploadFormAjax
-	@GetMapping("/uploadFormAjax")
-	public void uploadFormAjaxGet() {
-		log.info("uploadFormAjax 요청");
-	}
-
 	@PostMapping("/uploadAjax")
 	public ResponseEntity<List<AttachFileDTO>> uploadFormPost(MultipartFile[] uploadFile) {
 		log.info("파일 업로드 요청");
-
-		String uploadFileName = null;
+		
+		
+		String uploadFileName=null;
 		String uploadFolder = "c:\\upload";
-
+		
 		String uploadFolderPath = getFolder();
-		File uploadPath = new File(uploadFolder, uploadFolderPath);
-
-		if (!uploadPath.exists()) {
-			uploadPath.mkdir();
+		
+		File uploadPath = new File(uploadFolder,uploadFolderPath);
+		
+		if(!uploadPath.exists()) {
+			uploadPath.mkdirs(); //폴더 생성
 		}
+		
 		List<AttachFileDTO> attachList = new ArrayList<AttachFileDTO>();
-
-		for (MultipartFile f : uploadFile) {
+		
+		
+		for(MultipartFile f:uploadFile) {
 //			log.info("upload File Name : "+f.getOriginalFilename());
-//			log.info("upload File Size : "+f.getSize());
-
-			// 서버 폴더에 전송된 파일 저장하기
-			// UUID 값 생성
-			UUID uuid = UUID.randomUUID();
-			uploadFileName = uuid.toString() + "_" + f.getOriginalFilename();
-
+//			log.info("upload File Size : "+f.getSize());	
+			
+			
+			//서버 폴더에 전송된 파일 저장하기
+			//UUID 값 생성
+			UUID uuid = UUID.randomUUID();			
+			uploadFileName = uuid.toString()+"_"+f.getOriginalFilename();	
+			
 			AttachFileDTO attach = new AttachFileDTO();
 			attach.setFileName(f.getOriginalFilename());
 			attach.setUploadPath(uploadFolderPath);
-			attach.setUuid(uuid.toString());
-
+			attach.setUuid(uuid.toString());			
+			
 			try {
-				File saveFile = new File(uploadPath, uploadFileName);
-
-				if (checkImageType(saveFile)) {
+				File saveFile = new File(uploadPath,uploadFileName);
+				
+				if(checkImageType(saveFile)) {
 					attach.setFileType(true);
-					// 썸네일 저장
-					FileOutputStream thumbnail = new FileOutputStream(new File(uploadPath, "s_" + uploadFileName));
+					//썸네일 저장
+					FileOutputStream thumbnail = new FileOutputStream(new File(uploadPath,"s_"+uploadFileName));
 					InputStream in = f.getInputStream();
 					Thumbnailator.createThumbnail(in, thumbnail, 100, 100);
 					in.close();
-					thumbnail.close();
+					thumbnail.close();					
 				}
-				// 파일 저장(원본 그대로)
+				
+				//파일 저장(원본 그대로)
 				f.transferTo(saveFile);
 				attachList.add(attach);
-
-			} catch (IllegalStateException e) {
+				
+			} catch (IllegalStateException e) {				
 				e.printStackTrace();
-			} catch (IOException e) {
+			} catch (IOException e) {				
 				e.printStackTrace();
 			}
 		}
-		return new ResponseEntity<List<AttachFileDTO>>(attachList, HttpStatus.OK);
+		return new ResponseEntity<List<AttachFileDTO>>(attachList,HttpStatus.OK);
 	}
-
-	// 썸네일 보여주기
+	
+	//썸네일 보여주기
 	@GetMapping("/display")
-	public ResponseEntity<byte[]> getFile(String fileName) {
-		log.info("썸네일 요청" + fileName);
-
-		File file = new File("c:\\upload\\" + fileName);
-
-		ResponseEntity<byte[]> entity = null;
-
+	public ResponseEntity<byte[]> getFile(String fileName){
+		log.info("썸네일 요청 "+fileName);
+		
+		File file = new File("c:\\upload\\"+fileName);
+		
+		ResponseEntity<byte[]> entity=null;
+		
 		HttpHeaders headers = new HttpHeaders();
 		try {
 			headers.add("Content-Type", Files.probeContentType(file.toPath()));
-			entity = new ResponseEntity<byte[]>(FileCopyUtils.copyToByteArray(file), headers, HttpStatus.OK);
-		} catch (IOException e) {
+			entity = new ResponseEntity<byte[]>(FileCopyUtils.copyToByteArray(file),headers,HttpStatus.OK);
+		} catch (IOException e) {			
 			e.printStackTrace();
 		}
 		return entity;
 	}
-
-	// 다운로드
-	@GetMapping(value = "/download", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
-	public ResponseEntity<Resource> downloadFile(String fileName) {
-		log.info("downlod file :" + fileName);
-
-		Resource resource = new FileSystemResource("c:\\upload\\" + fileName);
-
+	
+	
+	@GetMapping(value="/download",produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+	public ResponseEntity<Resource> downloadFile(String fileName){
+		log.info("download file "+fileName);
+		
+		Resource resource = new FileSystemResource("c:\\upload\\"+fileName);
+		
 		HttpHeaders headers = new HttpHeaders();
-
+		
 		String uidFileName = resource.getFilename();
-		String resourceName = uidFileName.substring(uidFileName.indexOf("_") + 1);
-
+		// uuid값을 제외한 파일명 추출
+		String resourceName = uidFileName.substring(uidFileName.indexOf("_")+1);
+		
 		try {
-			headers.add("Content-Disposition",
-					"attachment;filename=" + URLEncoder.encode(resource.getFilename(), "utf-8"));
-		} catch (UnsupportedEncodingException e) {
+			headers.add("Content-Disposition", "attachment;filename="+URLEncoder.encode(resourceName, "utf-8"));
+			
+		} catch (UnsupportedEncodingException e) {			
 			e.printStackTrace();
-		}
-
-		return new ResponseEntity<Resource>(resource, headers, HttpStatus.OK);
+		}		
+				
+		return new ResponseEntity<Resource>(resource,headers,HttpStatus.OK);
 	}
+	
 	//upload 폴더에 있는 파일 삭제
 	@PostMapping("/deleteFile")
 	public ResponseEntity<String> deleteFile(String fileName,String type){
 		log.info("파일 삭제 : "+fileName+" type : "+type);
 		
+		
 		try {
-			File file = new File("c:\\upload\\"+URLDecoder.decode(fileName,"utf-8"));
+			File file=new File("c:\\upload\\"+URLDecoder.decode(fileName,"utf-8"));
 			
 			file.delete(); //일반 파일 삭제, 이미지인 경우 썸네일만 삭제
 			
 			if(type.equals("image")) {
 				//원본 이미지 파일명 추출
-				String largeName = file.getAbsolutePath().replace("s_","");
+				String largeName = file.getAbsolutePath().replace("s_", "");
 				file = new File(largeName);
-				file.delete();//원본 이미지 파일 삭제
-			}
-		} catch (UnsupportedEncodingException e) {
+				file.delete(); //원본 이미지 파일 삭제
+			}	
+			
+		} catch (UnsupportedEncodingException e) {			
 			e.printStackTrace();
-		}
+		}	
 		
 		return new ResponseEntity<String>("success",HttpStatus.OK);
 	}
 	
-
-	// 첨부 파일이 이미지인지 아닌지 판단
+	
+	
+	
+	
+	
+	
+	
+	//첨부 파일이 이미지인지 아닌지 판단
 	private boolean checkImageType(File file) {
 		String contentType;
 		try {
 			contentType = Files.probeContentType(file.toPath());
 			return contentType.startsWith("image");
-		} catch (IOException e) {
+		} catch (IOException e) {			
 			e.printStackTrace();
 		}
 		return false;
 	}
-
-	// 폴더 생성
+	
+	//폴더 생성
 	private String getFolder() {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
+		
 		Date date = new Date();
-		String str = sdf.format(date);
-
-		return str.replace("-", File.separator);
+		String str = sdf.format(date); // "2021-06-17"
+		
+		return str.replace("-", File.separator); // "2021\06\17"
 	}
 }
