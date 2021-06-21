@@ -102,3 +102,7 @@ alter table spring_attach add constraint pk_attach primary key(uuid);
 alter table spring_attach add constraint fk_board_attach foreign key(bno) references spring_board(bno);
 
 select * from spring_attach;
+
+--어제 날짜
+select * from spring_attach
+where uploadPath = to_char(sysdate-1,'yyyy\mm\dd');
