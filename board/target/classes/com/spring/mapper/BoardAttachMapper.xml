@@ -6,9 +6,9 @@
 		insert into spring_attach(uuid,uploadpath,filename,filetype,bno)
 		values(#{uuid},#{uploadpath},#{filename},#{filetype},#{bno})
 	</insert>
-	<!-- delete : uuid 일치시 -->
+	<!-- delete : bno 일치시 -->
 	<delete id="delete">
-		delete from spring_attach where uuid = #{uuid}
+		delete from spring_attach where bno = #{bno}
 	</delete>	
 	<!-- select(id:findByBno) : bno 일치시(AttachFileDTO 이용) -->
 	<select id="findByBno" resultType="com.spring.domain.AttachFileDTO">

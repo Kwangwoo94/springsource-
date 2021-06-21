@@ -4,9 +4,12 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.spring.domain.AttachFileDTO;
 import com.spring.domain.BoardVO;
 import com.spring.domain.Criteria;
+import com.spring.mapper.BoardAttachMapper;
 import com.spring.mapper.BoardMapper;
 
 @Service
@@ -16,15 +19,33 @@ public class BoardServiceImpl implements BoardService {
 	private BoardMapper mapper;
 	
 	@Autowired
-	private BoardMapper boardMapper;
+	private BoardAttachMapper attachMapper;
 	
+	
+	@Transactional
 	@Override
 	public boolean insert(BoardVO vo) {
-		return mapper.insert(vo)>0?true:false;
+		//새글 등록
+		boolean result = mapper.insert(vo)>0?true:false;
+		//첨부파일 등록
+		if(vo.getAttachList()==null||vo.getAttachList().size()<=0) {
+			return result;
+		}
+		
+		vo.getAttachList().forEach(attach ->{
+			attach.setBno(vo.getBno());
+			attachMapper.insert(attach);
+		});
+		
+		return result;
 	}
-
+	
+	@Transactional
 	@Override
 	public boolean delete(int bno) {
+		//첨부파일 삭제
+		attachMapper.delete(bno);
+		//게시글 삭제
 		return mapper.delete(bno)>0?true:false;
 	}
 
@@ -46,6 +67,11 @@ public class BoardServiceImpl implements BoardService {
 	@Override
 	public int total(Criteria cri) {
 		return mapper.totalCnt(cri);
+	}
+
+	@Override
+	public List<AttachFileDTO> getAttachList(int bno) {
+		return attachMapper.findByBno(bno);
 	}
 
 }
