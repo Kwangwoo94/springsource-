@@ -30,3 +30,19 @@ WHERE u.userid = '1';
 
 select * from SP_USER;
 select * from SP_USER_AUTHORITY;
+
+SELECT u.userid,email,password,enabled,authority 
+FROM SP_USER u left outer join SP_USER_AUTHORITY a ON u.userid = a.userid
+WHERE u.userid = '1';
+
+
+-- remember me 테이블 생성(테이블 구조는 고정)
+create table persistent_logins(
+	username varchar(64) not null,
+	series varchar(64) not null,
+	token varchar(64) not null,
+	last_used timestamp not null
+);
+
+select * from persistent_logins;
+
