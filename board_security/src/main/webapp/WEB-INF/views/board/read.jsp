@@ -141,7 +141,7 @@
 	//현재 로그인 사용자 가져오기
 	var replyer = null;
 	<sec:authorize access="isAuthenticated()">
-	replyer = '<sec:authentication propery="principal.username"/>';
+	replyer = '<sec:authentication property="principal.username"/>';
 	</sec:authorize>
 	
 	var csrfHeaderName="${_csrf.parameterName}";
